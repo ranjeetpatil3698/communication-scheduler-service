@@ -1,0 +1,29 @@
+spring.application.name: communication-scheduler-service
+
+server:
+  port: 8084
+  tomcat:
+    threads:
+      max: 250
+
+spring:
+  datasource:
+    url: jdbc:mysql://localhost:3307/communication_scheduler_service
+    username: root
+    password: root
+    driver-class-name: com.mysql.cj.jdbc.Driver
+  flyway:
+    locations: classpath:db/migration
+
+management:
+  endpoint:
+    metrics:
+      enabled: true
+  endpoints:
+    web:
+      exposure:
+        include: "*"
+  metrics:
+    export:
+      prometheus:
+        enabled: true
