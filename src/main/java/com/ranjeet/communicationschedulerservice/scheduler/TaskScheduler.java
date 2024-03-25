@@ -7,6 +7,7 @@ import jakarta.annotation.PostConstruct;
 import jakarta.annotation.PreDestroy;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import java.util.concurrent.Executors;
@@ -23,7 +24,8 @@ public class TaskScheduler {
     @Autowired
     TaskDetailsService taskDetailsService;
 
-    int taskSchedulerMaximumThreads = 1;
+    @Value("${scheduler.noOfTaskSchedulerThreads}")
+    int taskSchedulerMaximumThreads;
 
     ScheduledExecutorService scheduledExecutorService = Executors.newScheduledThreadPool(taskSchedulerMaximumThreads);
 

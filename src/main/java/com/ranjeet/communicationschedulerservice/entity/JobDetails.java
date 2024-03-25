@@ -4,6 +4,8 @@ import com.ranjeet.communicationschedulerservice.enums.JobStatus;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.time.LocalDateTime;
+
 @Data
 @Entity
 @Builder
@@ -32,4 +34,10 @@ public class JobDetails {
 
     @Column(name = "retry_count")
     Integer retryCount;
+
+    @Column(name = "last_run_time")
+    LocalDateTime lastRunTime;
+
+    @Column(name = "next_run_time")
+    LocalDateTime nextRunTime;
 }

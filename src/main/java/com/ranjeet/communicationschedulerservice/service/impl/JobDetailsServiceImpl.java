@@ -17,6 +17,9 @@ import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.Instant;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.util.List;
 
@@ -46,12 +49,17 @@ public class JobDetailsServiceImpl implements JobDetailsService {
 
 
     private long getNextEpochSecond(TaskDetails taskDetails) {
+        String cronExpression = taskDetails.getCronExpression();
+        ZonedDateTime nextRun = getZonedDateTime(cronExpression);
+        return nextRun.toEpochSecond();
+    }
+
+    private ZonedDateTime getZonedDateTime(String cronExpression) {
         CronParser parser = new CronParser(CronDefinitionBuilder.instanceDefinitionFor(CronType.UNIX));
-        Cron cron = parser.parse(taskDetails.getCronExpression());
+        Cron cron = parser.parse(cronExpression);
         ZonedDateTime now = ZonedDateTime.now();
         ExecutionTime executionTime = ExecutionTime.forCron(cron);
-        ZonedDateTime nextRun = executionTime.nextExecution(now).get();
-        return nextRun.toEpochSecond();
+        return executionTime.nextExecution(now).get();
     }
 
     @Override
@@ -66,8 +74,15 @@ public class JobDetailsServiceImpl implements JobDetailsService {
         TaskDetails taskDetails = taskDetailsService.getTaskDetails(taskId);
         JobDetails jobDetails = jobDetailsRepository.getJobByTaskId(taskId);
         jobDetails.setJobStatus(jobStatus);
+        jobDetails.setLastRunTime(LocalDateTime.now());
         jobDetails.setNextRunEpoch(getNextEpochSecond(taskDetails));
+        jobDetails.setNextRunTime(getNextRunFromCronExpression(taskDetails.getCronExpression()));
         jobDetailsRepository.save(jobDetails);
+    }
+
+    private LocalDateTime getNextRunFromCronExpression(String cronExpression){
+        ZonedDateTime nextRun = getZonedDateTime(cronExpression);
+        return nextRun.toLocalDateTime();
     }
 
     private JobDetails getJobDetails(TaskDetails taskDetails, long epochSecond) {
@@ -75,6 +90,8 @@ public class JobDetailsServiceImpl implements JobDetailsService {
                 .jobStatus(JobStatus.SUCCESS)
                 .taskId(taskDetails.getId())
                 .cronExpression(taskDetails.getCronExpression())
+                .lastRunTime(null)
+                .nextRunTime(getNextRunFromCronExpression(taskDetails.getCronExpression()))
                 .nextRunEpoch(epochSecond)
                 .retryCount(0)
                 .build();

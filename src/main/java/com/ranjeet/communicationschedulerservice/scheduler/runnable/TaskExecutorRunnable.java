@@ -7,6 +7,8 @@ import com.ranjeet.communicationschedulerservice.service.TaskDetailsService;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 
+import java.time.LocalDateTime;
+
 
 @Slf4j
 @Setter
@@ -20,7 +22,7 @@ public class TaskExecutorRunnable implements Runnable{
 
     @Override
     public void run() {
-        log.info("Processing Job with ID {}",jobDetails.getId());
+        log.info("Processing Job with ID {} on {}",jobDetails.getId(),LocalDateTime.now());
         //does the job
 
         //update the status along with next epoch time
