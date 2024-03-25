@@ -3,10 +3,11 @@ package com.ranjeet.communicationschedulerservice.scheduler.runnable;
 import com.ranjeet.communicationschedulerservice.entity.JobDetails;
 import com.ranjeet.communicationschedulerservice.service.JobDetailsService;
 import com.ranjeet.communicationschedulerservice.service.TaskDetailsService;
+import io.micrometer.core.instrument.Counter;
+import io.micrometer.core.instrument.Timer;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 
-import java.time.LocalDateTime;
 import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -20,6 +21,10 @@ public class TaskSchedulerRunnable implements Runnable{
     TaskDetailsService taskDetailsService;
 
     ExecutorService executor = Executors.newFixedThreadPool(10);
+
+    Counter jobProcessedCounter;
+
+    Timer jobProcessingLatency;
 
 
     @Override
@@ -40,6 +45,8 @@ public class TaskSchedulerRunnable implements Runnable{
                 taskExecutorRunnable.setJobDetails(jobDetails);
                 taskExecutorRunnable.setTaskDetailsService(taskDetailsService);
                 taskExecutorRunnable.setJobDetailsService(jobDetailsService);
+                taskExecutorRunnable.setJobProcessedCounter(jobProcessedCounter);
+                taskExecutorRunnable.setJobProcessingLatency(jobProcessingLatency);
                 executor.submit(taskExecutorRunnable);
             }
         }
