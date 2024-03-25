@@ -1,5 +1,7 @@
-package com.ranjeet.communicationschedulerservice;
+package com.ranjeet.communicationschedulerservice.scheduler.runnable;
 
+import com.ranjeet.communicationschedulerservice.request.RequestDto;
+import com.ranjeet.communicationschedulerservice.response.ResponseDto;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.client.RestClient;

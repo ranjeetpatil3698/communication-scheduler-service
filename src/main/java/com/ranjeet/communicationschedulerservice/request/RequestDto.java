@@ -1,4 +1,4 @@
-package com.ranjeet.communicationschedulerservice;
+package com.ranjeet.communicationschedulerservice.request;
 
 import lombok.Builder;
 import lombok.Getter;

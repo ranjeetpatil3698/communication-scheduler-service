@@ -27,3 +27,7 @@ management:
     export:
       prometheus:
         enabled: true
+
+scheduler:
+  noOfTaskSchedulerThreads: 1
+  noOfTaskSchedulerRunnableThreads: 10

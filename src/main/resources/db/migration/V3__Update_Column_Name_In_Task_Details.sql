@@ -1,0 +1,2 @@
+ALTER TABLE task_details
+RENAME COLUMN communicationAddress TO communication_address;
