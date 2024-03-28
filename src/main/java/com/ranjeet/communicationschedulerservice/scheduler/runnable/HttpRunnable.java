@@ -23,7 +23,7 @@ public class HttpRunnable implements Runnable {
                     .message("hello")
                     .communicationAddress("patilranjeet3699@gmail.com")
                     .sender("ranjeet@patil.com").build();
-            ResponseEntity<SimulateResponseDto> response = null;
+            ResponseEntity<SimulateResponseDto> response;
             try {
                 response = restClient
                         .post()

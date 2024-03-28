@@ -3,7 +3,6 @@ package com.ranjeet.communicationschedulerservice.scheduler;
 import com.ranjeet.communicationschedulerservice.Exception.CommunicationProviderNotFoundProviderException;
 import com.ranjeet.communicationschedulerservice.enums.CommunicationSenderProvider;
 import com.ranjeet.communicationschedulerservice.scheduler.runnable.FailedTaskSchedulerRunnable;
-import com.ranjeet.communicationschedulerservice.scheduler.runnable.TaskSchedulerRunnable;
 import com.ranjeet.communicationschedulerservice.sender.CommunicationSender;
 import com.ranjeet.communicationschedulerservice.sender.CommunicationSenderFactory;
 import com.ranjeet.communicationschedulerservice.service.JobDetailsService;
@@ -51,7 +50,7 @@ public class FailedTaskScheduler {
     CommunicationSenderProvider senderProvider;
 
     public FailedTaskScheduler() {
-        scheduledExecutorService = Executors.newScheduledThreadPool(noOfFailedTaskSchedulerThreads);;
+        scheduledExecutorService = Executors.newScheduledThreadPool(noOfFailedTaskSchedulerThreads);
     }
 
     @PostConstruct

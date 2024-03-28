@@ -1,6 +1,5 @@
 package com.ranjeet.communicationschedulerservice.service;
 
-import com.ranjeet.communicationschedulerservice.Exception.TaskDetailsNotFoundException;
 import com.ranjeet.communicationschedulerservice.entity.TaskDetails;
 import com.ranjeet.communicationschedulerservice.request.TaskRequestDto;
 import com.ranjeet.communicationschedulerservice.response.TaskResponseDto;

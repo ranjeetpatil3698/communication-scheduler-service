@@ -1,6 +1,5 @@
 package com.ranjeet.communicationschedulerservice.sender.impl;
 
-import com.ranjeet.communicationschedulerservice.Exception.CommunicationProviderNotFoundProviderException;
 import com.ranjeet.communicationschedulerservice.enums.CommunicationSenderProvider;
 import com.ranjeet.communicationschedulerservice.sender.CommunicationSender;
 import com.ranjeet.communicationschedulerservice.sender.CommunicationSenderFactory;

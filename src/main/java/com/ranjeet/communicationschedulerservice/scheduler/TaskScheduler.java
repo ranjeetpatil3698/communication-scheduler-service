@@ -5,7 +5,6 @@ import com.ranjeet.communicationschedulerservice.enums.CommunicationSenderProvid
 import com.ranjeet.communicationschedulerservice.scheduler.runnable.TaskSchedulerRunnable;
 import com.ranjeet.communicationschedulerservice.sender.CommunicationSender;
 import com.ranjeet.communicationschedulerservice.sender.CommunicationSenderFactory;
-import com.ranjeet.communicationschedulerservice.sender.impl.CommunicationSenderFactoryImpl;
 import com.ranjeet.communicationschedulerservice.service.JobDetailsService;
 import com.ranjeet.communicationschedulerservice.service.TaskDetailsService;
 import io.micrometer.core.instrument.MeterRegistry;
