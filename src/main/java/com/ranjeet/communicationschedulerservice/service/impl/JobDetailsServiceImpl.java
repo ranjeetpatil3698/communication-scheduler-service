@@ -13,6 +13,7 @@ import com.ranjeet.communicationschedulerservice.service.JobDetailsService;
 import com.ranjeet.communicationschedulerservice.service.TaskDetailsService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
@@ -29,6 +30,21 @@ public class JobDetailsServiceImpl implements JobDetailsService {
     @Autowired
     TaskDetailsService taskDetailsService;
 
+    @Value("${scheduler.noOfTaskSchedulerThreads}")
+    Integer noOfTaskSchedulerThreads;
+
+    @Value("${scheduler.noOfJobsToProcess}")
+    Integer noOfJobsToProcess;
+
+    @Value("${scheduler.noOfFailedTaskSchedulerThreads}")
+    Integer noOfFailedTaskSchedulerThreads;
+
+    @Value("${scheduler.noOfFailedJobsToProcess}")
+    Integer noOfFailedJobsToProcess;
+
+    @Value("${scheduler.failedJobRetryCount}")
+    Integer failedJobRetryCount;
+
     @Override
     public void saveJobDetails(TaskDetails taskDetails) {
         long epochSecond = getNextEpochSecond(taskDetails);
@@ -39,9 +55,17 @@ public class JobDetailsServiceImpl implements JobDetailsService {
     @Override
     @Transactional
     public List<JobDetails> getNextJobsToProcess() {
-        List<JobDetails> nextJobToRun = jobDetailsRepository.getNextJobsToRun();
+        List<JobDetails> nextJobToRun = getNextJobs();
         nextJobToRun.forEach(jobDetails -> jobDetails.setJobStatus(JobStatus.RUNNING));
         return jobDetailsRepository.saveAll(nextJobToRun);
+    }
+
+
+    private List<JobDetails> getNextJobs() {
+        if (noOfTaskSchedulerThreads == 1) {
+            return jobDetailsRepository.getNextJobsToRun();
+        }
+        return jobDetailsRepository.getNextNJobsToRun(noOfJobsToProcess);
     }
 
 
@@ -67,14 +91,29 @@ public class JobDetailsServiceImpl implements JobDetailsService {
 
     @Override
     @Transactional
-    public void updateJobDetails(int taskId, JobStatus jobStatus) {
+    public void updateJobDetails(int taskId, JobStatus jobStatus,Boolean updateRetryCount) {
         TaskDetails taskDetails = taskDetailsService.getTaskDetails(taskId);
         JobDetails jobDetails = jobDetailsRepository.getJobByTaskId(taskId);
         jobDetails.setJobStatus(jobStatus);
         jobDetails.setLastRunTime(LocalDateTime.now());
         jobDetails.setNextRunEpoch(getNextEpochSecond(taskDetails));
         jobDetails.setNextRunTime(getNextRunFromCronExpression(taskDetails.getCronExpression()));
+        if(updateRetryCount) jobDetails.setRetryCount(jobDetails.getRetryCount() + 1);
         jobDetailsRepository.save(jobDetails);
+    }
+
+    @Override
+    public List<JobDetails> getNextFailedJobsToProcess() {
+        List<JobDetails> nextFailedJobsToRun = getNextFailedJobs();
+        nextFailedJobsToRun.forEach(jobDetails -> jobDetails.setJobStatus(JobStatus.RUNNING));
+        return jobDetailsRepository.saveAll(nextFailedJobsToRun);
+    }
+
+    private List<JobDetails> getNextFailedJobs() {
+        if (noOfFailedTaskSchedulerThreads == 1) {
+            return jobDetailsRepository.getNextFailedJobsToRun(failedJobRetryCount);
+        }
+        return jobDetailsRepository.getNextNFailedJobsToRun(noOfFailedJobsToProcess,failedJobRetryCount);
     }
 
     private LocalDateTime getNextRunFromCronExpression(String cronExpression){
@@ -93,6 +132,4 @@ public class JobDetailsServiceImpl implements JobDetailsService {
                 .retryCount(0)
                 .build();
     }
-
-
 }

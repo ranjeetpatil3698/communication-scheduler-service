@@ -13,12 +13,11 @@ import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 
 import java.time.LocalDateTime;
-import java.util.Arrays;
 
 
 @Slf4j
 @Setter
-public class TaskExecutorRunnable implements Runnable{
+public class FailedTaskExecutorRunnable implements Runnable{
 
     JobDetails jobDetails;
 
@@ -34,8 +33,7 @@ public class TaskExecutorRunnable implements Runnable{
 
     CommunicationSender communicationSender;
 
-
-    public TaskExecutorRunnable(JobDetails jobDetails, JobDetailsService jobDetailsService, TaskDetailsService taskDetailsService, MeterRegistry meterRegistry, CommunicationSender communicationSender) {
+    public FailedTaskExecutorRunnable(JobDetails jobDetails, JobDetailsService jobDetailsService, TaskDetailsService taskDetailsService, MeterRegistry meterRegistry,CommunicationSender communicationSender) {
         this.jobDetails = jobDetails;
         this.jobDetailsService = jobDetailsService;
         this.taskDetailsService = taskDetailsService;
@@ -58,11 +56,11 @@ public class TaskExecutorRunnable implements Runnable{
             log.info("Processing Done with ID {}",jobDetails.getId());
         }catch (Exception exception){
             log.error("Job Failed with Id {} with Exception {}",jobDetails.getId(),exception.getMessage());
-            log.error(Arrays.toString(exception.getStackTrace()));
-            jobDetailsService.updateJobDetails(jobDetails.getTaskId(),JobStatus.FAILED,false);
+            jobDetailsService.updateJobDetails(jobDetails.getTaskId(),JobStatus.FAILED,true);
         }finally {
             jobProcessedCounter.increment();
             processingLatency.stop(jobProcessingLatency);
         }
+        log.info("Processing Done with ID {}",jobDetails.getId());
     }
 }

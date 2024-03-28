@@ -2,10 +2,10 @@ package com.ranjeet.communicationschedulerservice.scheduler;
 
 import com.ranjeet.communicationschedulerservice.Exception.CommunicationProviderNotFoundProviderException;
 import com.ranjeet.communicationschedulerservice.enums.CommunicationSenderProvider;
+import com.ranjeet.communicationschedulerservice.scheduler.runnable.FailedTaskSchedulerRunnable;
 import com.ranjeet.communicationschedulerservice.scheduler.runnable.TaskSchedulerRunnable;
 import com.ranjeet.communicationschedulerservice.sender.CommunicationSender;
 import com.ranjeet.communicationschedulerservice.sender.CommunicationSenderFactory;
-import com.ranjeet.communicationschedulerservice.sender.impl.CommunicationSenderFactoryImpl;
 import com.ranjeet.communicationschedulerservice.service.JobDetailsService;
 import com.ranjeet.communicationschedulerservice.service.TaskDetailsService;
 import io.micrometer.core.instrument.MeterRegistry;
@@ -23,8 +23,7 @@ import java.util.concurrent.TimeUnit;
 
 @Slf4j
 @Component
-public class TaskScheduler {
-
+public class FailedTaskScheduler {
     @Autowired
     JobDetailsService jobDetailsService;
 
@@ -37,21 +36,22 @@ public class TaskScheduler {
     @Autowired
     CommunicationSenderFactory communicationSenderFactory;
 
-    @Value("${scheduler.noOfTaskSchedulerThreads}")
-    int taskSchedulerMaximumThreads;
+    ScheduledExecutorService scheduledExecutorService;
 
-    @Value("${scheduler.startTaskScheduler}")
-    Boolean startTaskScheduler;
+    @Value("${scheduler.noOfFailedTaskSchedulerThreads}")
+    int noOfFailedTaskSchedulerThreads;
 
-    @Value("${scheduler.noOfJobsExecutorThreads}")
-    Integer noOfJobsExecutorThreads;
+    @Value("${scheduler.startFailedTaskScheduler}")
+    Boolean startFailedTaskScheduler;
+
+    @Value("${scheduler.noOfFailedJobsExecutorThreads}")
+    Integer noOfFailedJobsExecutorThreads;
 
     @Value("${senderProvider}")
     CommunicationSenderProvider senderProvider;
-    ScheduledExecutorService scheduledExecutorService;
 
-    public TaskScheduler() {
-        scheduledExecutorService = Executors.newScheduledThreadPool(taskSchedulerMaximumThreads);
+    public FailedTaskScheduler() {
+        scheduledExecutorService = Executors.newScheduledThreadPool(noOfFailedTaskSchedulerThreads);;
     }
 
     @PostConstruct
@@ -60,11 +60,12 @@ public class TaskScheduler {
         if(Objects.isNull(communicationSender)){
             throw new CommunicationProviderNotFoundProviderException("Communication Provider Not Found");
         }
-        if(Objects.nonNull(startTaskScheduler) && startTaskScheduler){
-            log.info("Starting task scheduler");
-            for(int i = 0; i < taskSchedulerMaximumThreads; i++){
-                TaskSchedulerRunnable taskSchedulerRunnable = new TaskSchedulerRunnable(jobDetailsService,taskDetailsService,meterRegistry,noOfJobsExecutorThreads, communicationSender);
-                scheduledExecutorService.scheduleAtFixedRate(taskSchedulerRunnable,1,1, TimeUnit.SECONDS);
+
+        if(Objects.nonNull(startFailedTaskScheduler) && startFailedTaskScheduler){
+            log.info("Starting Failed task scheduler");
+            for(int i = 0; i < noOfFailedTaskSchedulerThreads; i++){
+                FailedTaskSchedulerRunnable failedTaskSchedulerRunnable = new FailedTaskSchedulerRunnable(jobDetailsService,taskDetailsService,meterRegistry,noOfFailedJobsExecutorThreads,communicationSender);
+                scheduledExecutorService.scheduleAtFixedRate(failedTaskSchedulerRunnable,1,1, TimeUnit.SECONDS);
             }
         }
     }

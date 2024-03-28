@@ -7,7 +7,7 @@ import lombok.Setter;
 @Getter
 @Setter
 @Builder
-public class ResponseDto {
+public class SimulateResponseDto {
     int statusCode;
     String status;
 }

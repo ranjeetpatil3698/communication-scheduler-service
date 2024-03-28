@@ -3,8 +3,7 @@ package com.ranjeet.communicationschedulerservice.entity;
 import jakarta.persistence.*;
 import lombok.*;
 
-@Getter
-@Setter
+@Data
 @Builder
 @Entity
 @Table(name = "task_details")

@@ -14,7 +14,7 @@ import lombok.Setter;
 @Getter
 @Setter
 @Builder
-public class RequestDto {
+public class SimulateRequestDto {
     String sender;
     String communicationAddress;
     String message;

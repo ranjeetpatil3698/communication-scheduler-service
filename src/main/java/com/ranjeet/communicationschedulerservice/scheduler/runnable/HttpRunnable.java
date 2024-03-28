@@ -1,7 +1,7 @@
 package com.ranjeet.communicationschedulerservice.scheduler.runnable;
 
-import com.ranjeet.communicationschedulerservice.request.RequestDto;
-import com.ranjeet.communicationschedulerservice.response.ResponseDto;
+import com.ranjeet.communicationschedulerservice.request.SimulateRequestDto;
+import com.ranjeet.communicationschedulerservice.response.SimulateResponseDto;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.client.RestClient;
@@ -18,19 +18,19 @@ public class HttpRunnable implements Runnable {
     @Override
     public void run() {
         for (int i = 0; i < 50; i++) {
-            RequestDto requestDto = RequestDto
+            SimulateRequestDto simulateRequestDto = SimulateRequestDto
                     .builder()
                     .message("hello")
                     .communicationAddress("patilranjeet3699@gmail.com")
                     .sender("ranjeet@patil.com").build();
-            ResponseEntity<ResponseDto> response = null;
+            ResponseEntity<SimulateResponseDto> response = null;
             try {
                 response = restClient
                         .post()
                         .uri("/send/communication")
-                        .body(requestDto)
+                        .body(simulateRequestDto)
                         .retrieve()
-                        .toEntity(ResponseDto.class);
+                        .toEntity(SimulateResponseDto.class);
                 log.info("Response {} ", response);
             } catch (RestClientException restClientException) {
                 log.error("Error {}", restClientException.getMessage());

@@ -6,12 +6,15 @@ import com.ranjeet.communicationschedulerservice.response.TaskResponseDto;
 import com.ranjeet.communicationschedulerservice.respository.TaskDetailsRepository;
 import com.ranjeet.communicationschedulerservice.service.JobDetailsService;
 import com.ranjeet.communicationschedulerservice.service.TaskDetailsService;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
 
+
 @Component
+@Slf4j
 public class TaskDetailsServiceImpl implements TaskDetailsService {
     @Autowired
     TaskDetailsRepository taskDetailsRepository;
@@ -49,7 +52,10 @@ public class TaskDetailsServiceImpl implements TaskDetailsService {
     }
 
     @Override
+    @Transactional
     public TaskDetails getTaskDetails(Integer id) {
-        return taskDetailsRepository.getReferenceById(id);
+        TaskDetails taskDetails = taskDetailsRepository.getReferenceById(id);
+        log.info("{}",taskDetails);
+        return taskDetails;
     }
 }
