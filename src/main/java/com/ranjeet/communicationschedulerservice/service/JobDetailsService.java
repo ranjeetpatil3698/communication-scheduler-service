@@ -10,6 +10,6 @@ public interface JobDetailsService {
     void saveJobDetails(TaskDetails taskDetails);
     List<JobDetails> getNextJobsToProcess();
     void saveJobDetails(JobDetails jobDetails);
-    void updateJobDetails(int taskId, JobStatus jobStatus,Boolean updateRetryCount);
+    void updateJobDetails(int taskId, JobStatus jobStatus,Integer updatedRetryCount);
     List<JobDetails> getNextFailedJobsToProcess();
 }

@@ -54,8 +54,6 @@ public class TaskDetailsServiceImpl implements TaskDetailsService {
     @Override
     @Transactional
     public TaskDetails getTaskDetails(Integer id) {
-        TaskDetails taskDetails = taskDetailsRepository.getReferenceById(id);
-        log.info("{}",taskDetails);
-        return taskDetails;
+        return taskDetailsRepository.findById(id).orElse(null);
     }
 }

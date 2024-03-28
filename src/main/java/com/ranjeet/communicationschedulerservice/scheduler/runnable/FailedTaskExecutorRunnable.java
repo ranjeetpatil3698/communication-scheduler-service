@@ -13,6 +13,7 @@ import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 
 import java.time.LocalDateTime;
+import java.util.Objects;
 
 
 @Slf4j
@@ -48,15 +49,14 @@ public class FailedTaskExecutorRunnable implements Runnable{
     public void run() {
         Timer.Sample processingLatency = Timer.start();
         log.info("Processing Job with ID {} on {}",jobDetails.getId(),LocalDateTime.now());
-        //does the job
         try{
             TaskDetails taskDetails = taskDetailsService.getTaskDetails(jobDetails.getId());
             communicationSender.sendCommunication(taskDetails,jobDetails);
-            jobDetailsService.updateJobDetails(jobDetails.getTaskId(),JobStatus.SUCCESS,false);
+            jobDetailsService.updateJobDetails(jobDetails.getTaskId(),JobStatus.SUCCESS,jobDetails.getRetryCount());
             log.info("Processing Done with ID {}",jobDetails.getId());
         }catch (Exception exception){
             log.error("Job Failed with Id {} with Exception {}",jobDetails.getId(),exception.getMessage());
-            jobDetailsService.updateJobDetails(jobDetails.getTaskId(),JobStatus.FAILED,true);
+            jobDetailsService.updateJobDetails(jobDetails.getTaskId(),JobStatus.FAILED,jobDetails.getRetryCount() + 1);
         }finally {
             jobProcessedCounter.increment();
             processingLatency.stop(jobProcessingLatency);

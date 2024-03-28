@@ -91,14 +91,14 @@ public class JobDetailsServiceImpl implements JobDetailsService {
 
     @Override
     @Transactional
-    public void updateJobDetails(int taskId, JobStatus jobStatus,Boolean updateRetryCount) {
+    public void updateJobDetails(int taskId, JobStatus jobStatus,Integer updatedRetryCount) {
         TaskDetails taskDetails = taskDetailsService.getTaskDetails(taskId);
         JobDetails jobDetails = jobDetailsRepository.getJobByTaskId(taskId);
         jobDetails.setJobStatus(jobStatus);
         jobDetails.setLastRunTime(LocalDateTime.now());
         jobDetails.setNextRunEpoch(getNextEpochSecond(taskDetails));
         jobDetails.setNextRunTime(getNextRunFromCronExpression(taskDetails.getCronExpression()));
-        if(updateRetryCount) jobDetails.setRetryCount(jobDetails.getRetryCount() + 1);
+        jobDetails.setRetryCount(updatedRetryCount);
         jobDetailsRepository.save(jobDetails);
     }
 

@@ -7,6 +7,7 @@ import com.ranjeet.communicationschedulerservice.response.SimulateResponseDto;
 import com.ranjeet.communicationschedulerservice.sender.CommunicationSender;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestClient;
@@ -16,6 +17,12 @@ import org.springframework.web.client.RestClient;
 @Qualifier("SIMULATE")
 public class SimulateSenderImpl implements CommunicationSender {
 
+    @Value("${senderProviderConfiguration.simulate.host}")
+    String senderHost;
+    @Value("${senderProviderConfiguration.simulate.port}")
+    String senderPort;
+    @Value("${senderProviderConfiguration.simulate.url}")
+    String senderUrl;
     private final RestClient restClient = RestClient
             .builder()
             .baseUrl("http://127.0.0.1:8081").build();
