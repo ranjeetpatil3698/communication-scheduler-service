@@ -115,6 +115,18 @@ public class JobDetailsServiceImpl implements JobDetailsService {
         jobDetailsRepository.delete(jobDetails);
     }
 
+    @Override
+    public Boolean validateCronExpression(String cronExpression) {
+        CronParser parser = new CronParser(CronDefinitionBuilder.instanceDefinitionFor(CronType.UNIX));
+        try {
+             parser.parse(cronExpression);
+        }catch (Exception exception){
+            log.error("Error While parsing the cronExpression {}",cronExpression);
+            return false;
+        }
+        return true;
+    }
+
     private List<JobDetails> getNextFailedJobs() {
         if (noOfFailedTaskSchedulerThreads == 1) {
             return jobDetailsRepository.getNextFailedJobsToRun(failedJobRetryCount);

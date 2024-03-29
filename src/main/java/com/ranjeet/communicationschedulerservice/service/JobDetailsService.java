@@ -13,4 +13,5 @@ public interface JobDetailsService {
     void updateJobDetails(int taskId, JobStatus jobStatus,Integer updatedRetryCount);
     List<JobDetails> getNextFailedJobsToProcess();
     void deleteJobDetailsByTaskId(Integer taskId);
+    Boolean validateCronExpression(String cronExpression);
 }

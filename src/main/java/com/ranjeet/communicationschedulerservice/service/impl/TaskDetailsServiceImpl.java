@@ -1,5 +1,7 @@
 package com.ranjeet.communicationschedulerservice.service.impl;
 
+import com.ranjeet.communicationschedulerservice.Exception.InvalidCronExpressionException;
+import com.ranjeet.communicationschedulerservice.Exception.TaskDetailsNotFoundException;
 import com.ranjeet.communicationschedulerservice.entity.TaskDetails;
 import com.ranjeet.communicationschedulerservice.request.TaskRequestDto;
 import com.ranjeet.communicationschedulerservice.response.TaskResponseDto;
@@ -28,8 +30,12 @@ public class TaskDetailsServiceImpl implements TaskDetailsService {
 
     @Override
     @Transactional
-    public TaskDetails addTask(TaskDetails taskDetails) {
+    public TaskDetails addTask(TaskDetails taskDetails) throws InvalidCronExpressionException {
         TaskDetails savedTaskDetails = taskDetailsRepository.save(taskDetails);
+        Boolean isValid = jobDetailsService.validateCronExpression(taskDetails.getCronExpression());
+        if(!isValid){
+            throw new InvalidCronExpressionException("Cron Expression Not Valid");
+        }
         jobDetailsService.saveJobDetails(savedTaskDetails);
         return savedTaskDetails;
     }
@@ -80,8 +86,11 @@ public class TaskDetailsServiceImpl implements TaskDetailsService {
 
     @Override
     @Transactional
-    public void deleteTask(Integer taskId) {
-        TaskDetails taskDetails = taskDetailsRepository.getReferenceById(taskId);
+    public void deleteTask(Integer taskId) throws TaskDetailsNotFoundException {
+        TaskDetails taskDetails = taskDetailsRepository.findById(taskId).orElse(null);
+        if(Objects.isNull(taskDetails)){
+            throw new TaskDetailsNotFoundException("Task Details with id does not exists " + taskId);
+        }
         jobDetailsService.deleteJobDetailsByTaskId(taskDetails.getId());
         taskDetailsRepository.delete(taskDetails);
     }
