@@ -71,7 +71,9 @@ public class TaskScheduler {
 
     @PreDestroy
     public void stop() {
-        log.info("Stopping task scheduler");
-        scheduledExecutorService.shutdown();
+        if(Objects.nonNull(startTaskScheduler) && startTaskScheduler){
+            log.info("Stopping task scheduler");
+            scheduledExecutorService.shutdown();
+        }
     }
 }

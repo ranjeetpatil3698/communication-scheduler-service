@@ -109,6 +109,12 @@ public class JobDetailsServiceImpl implements JobDetailsService {
         return jobDetailsRepository.saveAll(nextFailedJobsToRun);
     }
 
+    @Override
+    public void deleteJobDetailsByTaskId(Integer taskId) {
+        JobDetails jobDetails = jobDetailsRepository.getJobByTaskId(taskId);
+        jobDetailsRepository.delete(jobDetails);
+    }
+
     private List<JobDetails> getNextFailedJobs() {
         if (noOfFailedTaskSchedulerThreads == 1) {
             return jobDetailsRepository.getNextFailedJobsToRun(failedJobRetryCount);

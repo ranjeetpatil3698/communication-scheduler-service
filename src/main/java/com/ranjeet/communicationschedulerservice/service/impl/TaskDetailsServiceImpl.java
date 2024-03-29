@@ -11,6 +11,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.Objects;
 
 
 @Component
@@ -42,6 +46,15 @@ public class TaskDetailsServiceImpl implements TaskDetailsService {
     }
 
     @Override
+    public List<TaskResponseDto> transform(List<TaskDetails> taskDetails) {
+        List<TaskResponseDto> taskResponseDtoList = new ArrayList<>();
+        taskDetails.stream()
+                .filter(Objects::nonNull)
+                .forEach(taskDetail -> taskResponseDtoList.add(this.transform(taskDetail)));
+        return taskResponseDtoList;
+    }
+
+    @Override
     public TaskDetails transform(TaskRequestDto taskRequestDto) {
         return TaskDetails.builder()
                 .communicationAddress(taskRequestDto.getCommunicationAddress())
@@ -55,5 +68,21 @@ public class TaskDetailsServiceImpl implements TaskDetailsService {
     @Transactional
     public TaskDetails getTaskDetails(Integer id) {
         return taskDetailsRepository.findById(id).orElse(null);
+    }
+
+    @Override
+    public List<TaskDetails> getTask(Integer taskId) {
+        if(Objects.isNull(taskId)){
+            return taskDetailsRepository.findAll();
+        }
+        return Collections.singletonList(getTaskDetails(taskId));
+    }
+
+    @Override
+    @Transactional
+    public void deleteTask(Integer taskId) {
+        TaskDetails taskDetails = taskDetailsRepository.getReferenceById(taskId);
+        jobDetailsService.deleteJobDetailsByTaskId(taskDetails.getId());
+        taskDetailsRepository.delete(taskDetails);
     }
 }

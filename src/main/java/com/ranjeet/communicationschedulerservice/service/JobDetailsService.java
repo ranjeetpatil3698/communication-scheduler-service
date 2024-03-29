@@ -12,4 +12,5 @@ public interface JobDetailsService {
     void saveJobDetails(JobDetails jobDetails);
     void updateJobDetails(int taskId, JobStatus jobStatus,Integer updatedRetryCount);
     List<JobDetails> getNextFailedJobsToProcess();
+    void deleteJobDetailsByTaskId(Integer taskId);
 }
