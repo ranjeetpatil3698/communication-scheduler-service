@@ -6,13 +6,13 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 /*
  * TODO:
- *  1. Fix URL scheme BUG.
+ *  1. Fix URL scheme BUG. -------
  *  2. Add endpoint to delete the task and job DONE
  *  3. Endpoint to get All the task DONE
- *  4. Fix RUNNING bug
- *  5. Expose Swagger documentation
- *  6. Implement Mailgun
- *  7. Add html support to message
+ *  4. Fix RUNNING bug , can't reproduce
+ *  5. Expose Swagger documentation DONE
+ *  6. Implement Mailgun -------
+ *  7. Add html support to message DONE
  *  8. handle graceful shutdown and try a @Prototype and Callable approach. Didn't work
  * */
 
