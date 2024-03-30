@@ -121,7 +121,7 @@ public class JobDetailsServiceImpl implements JobDetailsService {
         try {
              parser.parse(cronExpression);
         }catch (Exception exception){
-            log.error("Error While parsing the cronExpression {}",cronExpression);
+            log.error("Error While parsing the cronExpression {} with message {}",cronExpression,exception.getMessage());
             return false;
         }
         return true;

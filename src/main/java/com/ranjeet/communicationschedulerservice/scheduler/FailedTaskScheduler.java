@@ -46,7 +46,7 @@ public class FailedTaskScheduler {
     @Value("${scheduler.noOfFailedJobsExecutorThreads}")
     Integer noOfFailedJobsExecutorThreads;
 
-    @Value("${senderProvider}")
+    @Value("${sender.provider}")
     CommunicationSenderProvider senderProvider;
 
     public FailedTaskScheduler() {

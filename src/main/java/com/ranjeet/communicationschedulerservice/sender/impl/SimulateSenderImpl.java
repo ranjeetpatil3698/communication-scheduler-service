@@ -5,6 +5,7 @@ import com.ranjeet.communicationschedulerservice.entity.TaskDetails;
 import com.ranjeet.communicationschedulerservice.request.SimulateRequestDto;
 import com.ranjeet.communicationschedulerservice.response.SimulateResponseDto;
 import com.ranjeet.communicationschedulerservice.sender.CommunicationSender;
+import jakarta.annotation.PostConstruct;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
@@ -23,9 +24,16 @@ public class SimulateSenderImpl implements CommunicationSender {
     String senderPort;
     @Value("${senderProviderConfiguration.simulate.url}")
     String senderUrl;
-    private final RestClient restClient = RestClient
-            .builder()
-            .baseUrl("http://127.0.0.1:8081").build();
+
+    private RestClient restClient;
+
+    @PostConstruct
+    void initialiseWebclient(){
+        restClient = RestClient
+                .builder()
+                .baseUrl(senderHost + ":" + senderPort).build();
+    }
+
 
     @Override
     public void sendCommunication(TaskDetails taskDetails, JobDetails jobDetails) {
@@ -39,7 +47,7 @@ public class SimulateSenderImpl implements CommunicationSender {
     private ResponseEntity<SimulateResponseDto> makeHttpRequest(SimulateRequestDto simulateRequestDto) {
         return restClient
                     .post()
-                    .uri("/send/communication")
+                    .uri(senderUrl)
                     .body(simulateRequestDto)
                     .retrieve()
                     .toEntity(SimulateResponseDto.class);

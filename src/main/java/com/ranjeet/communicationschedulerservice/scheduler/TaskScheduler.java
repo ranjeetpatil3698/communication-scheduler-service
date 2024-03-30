@@ -45,7 +45,7 @@ public class TaskScheduler {
     @Value("${scheduler.noOfJobsExecutorThreads}")
     Integer noOfJobsExecutorThreads;
 
-    @Value("${senderProvider}")
+    @Value("${sender.provider}")
     CommunicationSenderProvider senderProvider;
     ScheduledExecutorService scheduledExecutorService;
 
@@ -77,3 +77,7 @@ public class TaskScheduler {
         }
     }
 }
+
+/*
+*
+* */

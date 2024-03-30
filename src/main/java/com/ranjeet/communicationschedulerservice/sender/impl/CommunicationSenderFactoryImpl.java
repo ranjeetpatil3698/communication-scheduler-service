@@ -14,11 +14,17 @@ public class CommunicationSenderFactoryImpl implements CommunicationSenderFactor
     @Qualifier("SIMULATE")
     CommunicationSender simulateCommunicationSender;
 
+    @Autowired
+    @Qualifier("MAILGUN")
+    CommunicationSender mailgunCommunicationSender;
+
      public CommunicationSender getCommunicationSender(CommunicationSenderProvider provider){
         if(provider.equals(CommunicationSenderProvider.SIMULATE)){
             return simulateCommunicationSender;
         }
-       // throw new CommunicationProviderNotFoundProviderException("Communication Provider Not Found");
+        if(provider.equals(CommunicationSenderProvider.MAILGUN)){
+            return mailgunCommunicationSender;
+        }
          return null;
     }
 }

@@ -46,6 +46,17 @@ senderProviderConfiguration:
     host: http://127.0.0.1
     port: 8081
     url: /send/communication
+  mailgun:
+    host: https://api.mailgun.net
+    url: /v3/${APP_MAILGUN_SENDING_DOMAIN}/messages
+    apiKey: ${APP_MAILGUN_API_KEY}
+    sendingDomain: ${APP_MAILGUN_SENDING_DOMAIN}
 
-senderProvider: SIMULATE
+
+sender:
+  provider: ${APP_SENDER_PROVIDER:MAILGUN}
+  from: "Scheduled Reminder"
+  subject: "Your Scheduled Email Reminder"
+
+
 

@@ -6,7 +6,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 /*
  * TODO:
- *  1. Fix URL scheme BUG. -------
+ *  1. Fix URL scheme BUG. DONE
  *  2. Add endpoint to delete the task and job DONE
  *  3. Endpoint to get All the task DONE
  *  4. Fix RUNNING bug , can't reproduce

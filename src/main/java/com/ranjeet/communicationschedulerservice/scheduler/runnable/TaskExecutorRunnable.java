@@ -50,16 +50,21 @@ public class TaskExecutorRunnable implements Runnable{
     public void run() {
         Timer.Sample processingLatency = Timer.start();
         log.info("Processing Job with ID {} on {}",jobDetails.getId(),LocalDateTime.now());
+        JobStatus currentJobStatus = JobStatus.RUNNING;
         try{
-            TaskDetails taskDetails = taskDetailsService.getTaskDetails(jobDetails.getId());
+            TaskDetails taskDetails = taskDetailsService.getTaskDetails(jobDetails.getTaskId());
             communicationSender.sendCommunication(taskDetails,jobDetails);
             jobDetailsService.updateJobDetails(jobDetails.getTaskId(),JobStatus.SUCCESS,jobDetails.getRetryCount());
+            currentJobStatus = JobStatus.SUCCESS;
             log.info("Processing Done with ID {}",jobDetails.getId());
         }catch (Exception exception){
             log.error("Job Failed with Id {} with Exception {}",jobDetails.getId(),exception.getMessage());
-            log.error(Arrays.toString(exception.getStackTrace()));
             jobDetailsService.updateJobDetails(jobDetails.getTaskId(),JobStatus.FAILED,jobDetails.getRetryCount());
+            currentJobStatus = JobStatus.FAILED;
         }finally {
+            if(currentJobStatus == JobStatus.RUNNING){
+                jobDetailsService.updateJobDetails(jobDetails.getTaskId(),JobStatus.FAILED,jobDetails.getRetryCount());
+            }
             jobProcessedCounter.increment();
             processingLatency.stop(jobProcessingLatency);
         }
