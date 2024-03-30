@@ -11,7 +11,7 @@ public class TaskRequestDto {
     String sender;
     @Schema(description = "Email recipient")
     String communicationAddress;
-    @Schema(description = "Email message")
+    @Schema(description = "Email message in HTML format")
     String message;
     @Schema(description = "Scheduled delivery Time In UNIX Cron Syntax")
     String cronExpression;
