@@ -1,7 +1,7 @@
 CREATE TABLE `job_details` (
   `id` int NOT NULL AUTO_INCREMENT,
   `task_id` int DEFAULT NULL,
-  `cron_expression` varchar(255) DEFAULT NULL,
+  `cron_expression` varchar(20) DEFAULT NULL,
   `next_run_epoch` bigint DEFAULT NULL,
   `job_status` enum('SUCCESS','FAILED','RUNNING') DEFAULT NULL,
   `retry_count` int DEFAULT NULL,
