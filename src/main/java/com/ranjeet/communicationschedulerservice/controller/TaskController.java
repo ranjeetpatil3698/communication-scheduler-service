@@ -11,6 +11,7 @@ import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -25,6 +26,7 @@ public class TaskController {
             @ApiResponse(responseCode = "200", description = "Task Created"),
             @ApiResponse(responseCode = "400", description = "Invalid Cron Expression")
     })
+    @CrossOrigin
     @RequestMapping(value = "/task",method = RequestMethod.POST)
     TaskResponseDto addNewTask(@io.swagger.v3.oas.annotations.parameters.RequestBody(description = "Request Body") @RequestBody TaskRequestDto taskRequestDto) throws InvalidCronExpressionException {
         TaskDetails taskDetailsRequest = taskDetailsService.transform(taskRequestDto);
@@ -33,6 +35,7 @@ public class TaskController {
     }
 
     @Operation(summary = "Get A Task", description = "Get Details Of Scheduled Task")
+    @CrossOrigin
     @RequestMapping(value = "/task",method = RequestMethod.GET)
     List<TaskResponseDto> getTask(@Parameter(description ="Get Task by ID If ID Is Provided, Otherwise Return All Tasks ") @RequestParam(required = false) Integer taskId){
         List<TaskDetails> taskDetailsList = taskDetailsService.getTask(taskId);
@@ -40,6 +43,7 @@ public class TaskController {
     }
 
     @Operation(summary = "Delete A Task", description = "Delete The Task By Id")
+    @CrossOrigin
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Task Deleted"),
             @ApiResponse(responseCode = "400", description = "Task Details Not Found")
